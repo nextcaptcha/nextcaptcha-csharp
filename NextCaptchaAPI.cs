@@ -42,7 +42,7 @@ namespace NextCaptchaSDK
             _httpClient = new HttpClient();
         }
 
-        private async Task<string> GetBalanceAsync()
+        private async Task<string> GetBalanceInternalAsync()
         {
             var response = await _httpClient.GetAsync($"{HOST}/getBalance?clientKey={_clientKey}");
             if (!response.IsSuccessStatusCode)
@@ -254,7 +254,7 @@ namespace NextCaptchaSDK
 
         public async Task<string> GetBalanceAsync()
         {
-            return await GetBalanceAsync();
+            return await GetBalanceInternalAsync();
         }
     }
 }
