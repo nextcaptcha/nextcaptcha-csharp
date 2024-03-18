@@ -47,10 +47,7 @@ jobs:
         uses: NuGet/setup-nuget@v1
 
       - name: Add NuGet source
-        run: |
-          nuget sources add -name github -source https://nuget.pkg.github.com/nextcaptcha/index.json -username nextcaptcha -password ${{ secrets.GIT_TOKEN }}
-        env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: Push NuGet Package
         run: nuget push *.nupkg -Source github -SkipDuplicate
