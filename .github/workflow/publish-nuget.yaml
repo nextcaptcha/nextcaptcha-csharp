@@ -1,0 +1,53 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Pack NuGet Package
+        run: dotnet pack --configuration Release
+
+      - name: Publish NuGet Package
+        uses: actions/upload-artifact@v2
+        with:
+          name: nupkg
+          path: ./bin/Release/*.nupkg
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: nupkg
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+
+      - name: Add NuGet Source
+        run: nuget sources add -name github -source https://nuget.pkg.github.com/nextcaptcha/index.json -username OWNER -password ${{ secrets.GIT_TOKEN }}
+
+      - name: Push NuGet Package
+        run: nuget push *.nupkg -Source github -SkipDuplicate
