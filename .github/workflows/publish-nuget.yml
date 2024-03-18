@@ -48,6 +48,3 @@ jobs:
 
       - name: Add NuGet source
         run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-
-      - name: Push NuGet Package
-        run: nuget push *.nupkg -Source github -SkipDuplicate
